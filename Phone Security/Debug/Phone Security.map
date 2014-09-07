@@ -380,10 +380,10 @@ END GROUP
  *(.debug_frame)
  .debug_frame   0x00000000       0x34 Phone Security.o
 
-.debug_str      0x00000000      0x1c7
+.debug_str      0x00000000      0x1b8
  *(.debug_str)
- .debug_str     0x00000000      0x1c7 Phone Security.o
-                                0x1fb (size before relaxing)
+ .debug_str     0x00000000      0x1b8 Phone Security.o
+                                0x1ec (size before relaxing)
 
 .debug_loc      0x00000000       0xab
  *(.debug_loc)
