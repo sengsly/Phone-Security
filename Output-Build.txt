@@ -1,0 +1,51 @@
+﻿------ Rebuild All started: Project: Phone Security, Configuration: Debug AVR ------
+Build started.
+Project "Phone Security.cppproj" (Clean target(s)):
+Target "Clean" in file "C:\Program Files\Atmel\Atmel Studio 6.2\Vs\Compiler.targets" from project "C:\Users\Administrator\Documents\Atmel Studio\6.2\Phone Security\Phone Security\Phone Security.cppproj" (entry point):
+	Task "RunCompilerTask"
+		Shell Utils Path C:\Program Files\Atmel\Atmel Studio 6.2\shellUtils
+		C:\Program Files\Atmel\Atmel Studio 6.2\shellUtils\make.exe clean 
+		rm -rf  "Phone Security.o"   
+		rm -rf  "Phone Security.d"   
+		rm -rf "Phone Security.elf" "Phone Security.a" "Phone Security.hex" "Phone Security.lss" "Phone Security.eep" "Phone Security.map" "Phone Security.srec" "Phone Security.usersignatures"
+	Done executing task "RunCompilerTask".
+Done building target "Clean" in project "Phone Security.cppproj".
+Done building project "Phone Security.cppproj".
+
+Build succeeded.
+------ Rebuild All started: Project: Phone Security, Configuration: Debug AVR ------
+Build started.
+Project "Phone Security.cppproj" (default targets):
+Target "PreBuildEvent" skipped, due to false condition; ('$(PreBuildEvent)'!='') was evaluated as (''!='').
+Target "CoreBuild" in file "C:\Program Files\Atmel\Atmel Studio 6.2\Vs\Compiler.targets" from project "C:\Users\Administrator\Documents\Atmel Studio\6.2\Phone Security\Phone Security\Phone Security.cppproj" (target "Build" depends on it):
+	Task "RunCompilerTask"
+		Shell Utils Path C:\Program Files\Atmel\Atmel Studio 6.2\shellUtils
+		C:\Program Files\Atmel\Atmel Studio 6.2\shellUtils\make.exe all 
+		Building file: .././Phone Security.cpp
+		Invoking: AVR8/GNU C Compiler : 4.8.1
+		"C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1056\avr8-gnu-toolchain\bin\avr-g++.exe" -funsigned-char -funsigned-bitfields -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega8 -c -MD -MP -MF "Phone Security.d" -MT"Phone Security.d" -MT"Phone Security.o"   -o "Phone Security.o" ".././Phone Security.cpp" 
+		Finished building: .././Phone Security.cpp
+		Building target: Phone Security.elf
+		Invoking: AVR8/GNU Linker : 4.8.1
+		"C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1056\avr8-gnu-toolchain\bin\avr-g++.exe" -o "Phone Security.elf"  "Phone Security.o"   -Wl,-Map="Phone Security.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atmega8  
+		Finished building target: Phone Security.elf
+		"C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1056\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "Phone Security.elf" "Phone Security.hex"
+		"C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1056\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "Phone Security.elf" "Phone Security.eep" || exit 0
+		"C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1056\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "Phone Security.elf" > "Phone Security.lss"
+		"C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1056\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "Phone Security.elf" "Phone Security.srec"
+		"C:\Program Files\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1056\avr8-gnu-toolchain\bin\avr-size.exe" "Phone Security.elf"
+		   text	   data	    bss	    dec	    hex	filename
+		    350	      0	      2	    352	    160	Phone Security.elf
+	Done executing task "RunCompilerTask".
+	Task "RunOutputFileVerifyTask"
+				Program Memory Usage 	:	350 bytes   4.3 % Full
+				Data Memory Usage 		:	2 bytes   0.2 % Full
+	Done executing task "RunOutputFileVerifyTask".
+Done building target "CoreBuild" in project "Phone Security.cppproj".
+Target "PostBuildEvent" skipped, due to false condition; ('$(PostBuildEvent)' != '') was evaluated as ('' != '').
+Target "Build" in file "C:\Program Files\Atmel\Atmel Studio 6.2\Vs\Avr.common.targets" from project "C:\Users\Administrator\Documents\Atmel Studio\6.2\Phone Security\Phone Security\Phone Security.cppproj" (entry point):
+Done building target "Build" in project "Phone Security.cppproj".
+Done building project "Phone Security.cppproj".
+
+Build succeeded.
+========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========

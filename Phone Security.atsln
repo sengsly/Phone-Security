@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "Phone Security", "Phone Security\Phone Security.cppproj", "{18BD47E8-BBA7-4B44-B72C-C2EAC6ADB144}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18BD47E8-BBA7-4B44-B72C-C2EAC6ADB144}.Debug|AVR.ActiveCfg = Debug|AVR
+		{18BD47E8-BBA7-4B44-B72C-C2EAC6ADB144}.Debug|AVR.Build.0 = Debug|AVR
+		{18BD47E8-BBA7-4B44-B72C-C2EAC6ADB144}.Release|AVR.ActiveCfg = Release|AVR
+		{18BD47E8-BBA7-4B44-B72C-C2EAC6ADB144}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
