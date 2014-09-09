@@ -3,29 +3,29 @@ Phone Security.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000138  00000000  00000000  00000094  2**1
+  0 .text         00000212  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00000138  000001cc  2**0
+  1 .data         00000000  00800060  00000212  000002a6  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000002  00800060  00800060  000001cc  2**0
+  2 .bss          00000004  00800060  00800060  000002a6  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000001cc  2**0
+  3 .comment      00000030  00000000  00000000  000002a6  2**0
                   CONTENTS, READONLY
-  4 .debug_aranges 00000028  00000000  00000000  000001fc  2**0
+  4 .debug_aranges 00000030  00000000  00000000  000002d6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000001c7  00000000  00000000  00000224  2**0
+  5 .debug_info   00000226  00000000  00000000  00000306  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000013b  00000000  00000000  000003eb  2**0
+  6 .debug_abbrev 00000151  00000000  00000000  0000052c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000183  00000000  00000000  00000526  2**0
+  7 .debug_line   000001b1  00000000  00000000  0000067d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000034  00000000  00000000  000006ac  2**2
+  8 .debug_frame  00000050  00000000  00000000  00000830  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000001b8  00000000  00000000  000006e0  2**0
+  9 .debug_str    000001df  00000000  00000000  00000880  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000ab  00000000  00000000  00000898  2**0
+ 10 .debug_loc    000000ca  00000000  00000000  00000a5f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000018  00000000  00000000  00000943  2**0
+ 11 .debug_ranges 00000020  00000000  00000000  00000b29  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -37,7 +37,7 @@ Disassembly of section .text:
    6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
    8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
    a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
-   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   c:	f1 c0       	rjmp	.+482    	; 0x1f0 <__vector_6>
    e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
   10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
   12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
@@ -69,17 +69,17 @@ Disassembly of section .text:
   3a:	1d 92       	st	X+, r1
 
 0000003c <.do_clear_bss_start>:
-  3c:	a2 36       	cpi	r26, 0x62	; 98
+  3c:	a4 36       	cpi	r26, 0x64	; 100
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
   42:	2c d0       	rcall	.+88     	; 0x9c <main>
-  44:	77 c0       	rjmp	.+238    	; 0x134 <_exit>
+  44:	e4 c0       	rjmp	.+456    	; 0x20e <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
 
 00000048 <_Z8Blink_Oni>:
-unsigned int status=0;
+uint8_t alarmMode=0;			//
 
 void Blink_On(int b){			//Blink and then turn on
 	
@@ -100,7 +100,7 @@ void Blink_On(int b){			//Blink and then turn on
 		BIT_SET(LED_PORT,b);
   5c:	23 e0       	ldi	r18, 0x03	; 3
   5e:	30 e0       	ldi	r19, 0x00	; 0
-unsigned int status=0;
+uint8_t alarmMode=0;			//
 
 void Blink_On(int b){			//Blink and then turn on
 	
@@ -141,8 +141,8 @@ void Blink_On(int b){			//Blink and then turn on
   8e:	00 00       	nop
   90:	21 50       	subi	r18, 0x01	; 1
   92:	31 09       	sbc	r19, r1
-
-unsigned int status=0;
+uint8_t oldstatus=0;
+uint8_t alarmMode=0;			//
 
 void Blink_On(int b){			//Blink and then turn on
 	
@@ -159,6 +159,7 @@ void Blink_On(int b){			//Blink and then turn on
   9a:	08 95       	ret
 
 0000009c <main>:
+
 int main(void)
 {
 	unsigned int i=0;
@@ -172,116 +173,289 @@ int main(void)
   a4:	94 bb       	out	0x14, r25	; 20
 	
 
-	INP_PORT=0xff;			//pull up resistor to high
+	INP_PORT=0xff;			//enable pull-up resistor
   a6:	88 bb       	out	0x18, r24	; 24
 	LED_PORT=0;				//Turn off all LEDs
   a8:	12 ba       	out	0x12, r1	; 18
-	ALM_PORT=0;
+	ALM_PORT=0x0;
   aa:	15 ba       	out	0x15, r1	; 21
 
-    while(1)
+	BIT_SET(ALM_PORT,1);		//Enable pull-up resistor
+  ac:	a9 9a       	sbi	0x15, 1	; 21
 	
-    {
-		
-		for(i=0;i<4;i++){
-  ac:	c0 e0       	ldi	r28, 0x00	; 0
-  ae:	d0 e0       	ldi	r29, 0x00	; 0
-  b0:	c1 2c       	mov	r12, r1
-  b2:	d1 2c       	mov	r13, r1
-			if( BIT_CHECK(INP_PORTPIN,i) && (!BIT_CHECK(status,i))) {
-  b4:	01 e0       	ldi	r16, 0x01	; 1
-  b6:	10 e0       	ldi	r17, 0x00	; 0
-  b8:	1c c0       	rjmp	.+56     	; 0xf2 <main+0x56>
-  ba:	26 b3       	in	r18, 0x16	; 22
-  bc:	8c 2f       	mov	r24, r28
-  be:	9d 2f       	mov	r25, r29
-  c0:	30 e0       	ldi	r19, 0x00	; 0
-  c2:	0c 2e       	mov	r0, r28
-  c4:	02 c0       	rjmp	.+4      	; 0xca <main+0x2e>
-  c6:	35 95       	asr	r19
-  c8:	27 95       	ror	r18
-  ca:	0a 94       	dec	r0
-  cc:	e2 f7       	brpl	.-8      	; 0xc6 <main+0x2a>
-  ce:	20 ff       	sbrs	r18, 0
-  d0:	0f c0       	rjmp	.+30     	; 0xf0 <main+0x54>
-  d2:	78 01       	movw	r14, r16
-  d4:	0c 2e       	mov	r0, r28
-  d6:	02 c0       	rjmp	.+4      	; 0xdc <main+0x40>
-  d8:	ee 0c       	add	r14, r14
-  da:	ff 1c       	adc	r15, r15
-  dc:	0a 94       	dec	r0
-  de:	e2 f7       	brpl	.-8      	; 0xd8 <main+0x3c>
-  e0:	20 91 60 00 	lds	r18, 0x0060
-  e4:	30 91 61 00 	lds	r19, 0x0061
-  e8:	2e 21       	and	r18, r14
-  ea:	3f 21       	and	r19, r15
-  ec:	23 2b       	or	r18, r19
-  ee:	b1 f0       	breq	.+44     	; 0x11c <main+0x80>
 
-    while(1)
 	
-    {
-		
-		for(i=0;i<4;i++){
-  f0:	21 96       	adiw	r28, 0x01	; 1
-  f2:	c4 30       	cpi	r28, 0x04	; 4
-  f4:	d1 05       	cpc	r29, r1
-  f6:	08 f3       	brcs	.-62     	; 0xba <main+0x1e>
-			if( BIT_CHECK(INP_PORTPIN,i) && (!BIT_CHECK(status,i))) {
-				Blink_On(i);
-				DATABIT_SET(status,i);
-			}			
-		}
-		if((INP_PORTPIN & 0x0f) !=status){		//4 bits only
-  f8:	26 b3       	in	r18, 0x16	; 22
-  fa:	2f 70       	andi	r18, 0x0F	; 15
-  fc:	30 e0       	ldi	r19, 0x00	; 0
-  fe:	80 91 60 00 	lds	r24, 0x0060
- 102:	90 91 61 00 	lds	r25, 0x0061
- 106:	28 17       	cp	r18, r24
- 108:	39 07       	cpc	r19, r25
- 10a:	21 f0       	breq	.+8      	; 0x114 <main+0x78>
-			BIT_SET(ALM_PORT,0);
- 10c:	a8 9a       	sbi	0x15, 0	; 21
+		OCR1A = 3906;
+  ae:	82 e4       	ldi	r24, 0x42	; 66
+  b0:	9f e0       	ldi	r25, 0x0F	; 15
+  b2:	9b bd       	out	0x2b, r25	; 43
+  b4:	8a bd       	out	0x2a, r24	; 42
 
-    while(1)
-	
-    {
+		TCCR1B |= (1 << WGM12);
+  b6:	8e b5       	in	r24, 0x2e	; 46
+  b8:	88 60       	ori	r24, 0x08	; 8
+  ba:	8e bd       	out	0x2e, r24	; 46
+		// Mode 4, CTC on OCR1A
+
+		TIMSK |= (1 << OCIE1A);
+  bc:	89 b7       	in	r24, 0x39	; 57
+  be:	80 61       	ori	r24, 0x10	; 16
+  c0:	89 bf       	out	0x39, r24	; 57
+		//Set interrupt on compare match
+
+		TCCR1B |= (1 << CS12) | (1 << CS10);
+  c2:	8e b5       	in	r24, 0x2e	; 46
+  c4:	85 60       	ori	r24, 0x05	; 5
+  c6:	8e bd       	out	0x2e, r24	; 46
+		// set prescaler to 1024 and start the timer
+
 		
-		for(i=0;i<4;i++){
- 10e:	cc 2d       	mov	r28, r12
- 110:	dd 2d       	mov	r29, r13
- 112:	ef cf       	rjmp	.-34     	; 0xf2 <main+0x56>
-			}			
-		}
-		if((INP_PORTPIN & 0x0f) !=status){		//4 bits only
-			BIT_SET(ALM_PORT,0);
+		sei();
+  c8:	78 94       	sei
+					alarmMode=1;
+				}
+			}
+			locked=1;
 		}else{
-			BIT_CLEAR(ALM_PORT,0);
- 114:	a8 98       	cbi	0x15, 0	; 21
-
+			if(oldstatus!=INP_PORTPIN){
+  ca:	e1 2c       	mov	r14, r1
+  cc:	f1 2c       	mov	r15, r1
+							 
+							Blink_On(i);
+							BIT_SET(oldstatus,i);
+						}
+					}else{
+						BIT_CLEAR(LED_PORT,i);
+  ce:	01 e0       	ldi	r16, 0x01	; 1
+  d0:	10 e0       	ldi	r17, 0x00	; 0
+				if(((INP_PORTPIN & 0x0f) !=status) && (!alarmMode)){		//4 bits only
+					BIT_SET(ALM_PORT,0);			//produce the alarm until unlocked
+					alarmMode=1;
+				}
+			}
+			locked=1;
+  d2:	dd 24       	eor	r13, r13
+  d4:	d3 94       	inc	r13
+		// enable interrupts
     while(1)
 	
     {
 		
-		for(i=0;i<4;i++){
- 116:	cc 2d       	mov	r28, r12
- 118:	dd 2d       	mov	r29, r13
- 11a:	eb cf       	rjmp	.-42     	; 0xf2 <main+0x56>
-			if( BIT_CHECK(INP_PORTPIN,i) && (!BIT_CHECK(status,i))) {
-				Blink_On(i);
- 11c:	95 df       	rcall	.-214    	; 0x48 <_Z8Blink_Oni>
-				DATABIT_SET(status,i);
- 11e:	80 91 60 00 	lds	r24, 0x0060
- 122:	90 91 61 00 	lds	r25, 0x0061
- 126:	e8 2a       	or	r14, r24
- 128:	f9 2a       	or	r15, r25
- 12a:	f0 92 61 00 	sts	0x0061, r15
- 12e:	e0 92 60 00 	sts	0x0060, r14
- 132:	de cf       	rjmp	.-68     	; 0xf0 <main+0x54>
+		if (!BIT_CHECK(ALM_PORTPIN ,1)){			// Check whether the button is pressed
+  d6:	99 99       	sbic	0x13, 1	; 19
+  d8:	40 c0       	rjmp	.+128    	; 0x15a <main+0xbe>
+			if(!locked){
+  da:	80 91 63 00 	lds	r24, 0x0063
+  de:	81 11       	cpse	r24, r1
+  e0:	2e c0       	rjmp	.+92     	; 0x13e <main+0xa2>
+  e2:	ce 2d       	mov	r28, r14
+  e4:	df 2d       	mov	r29, r15
+				for(i=0;i<4;i++){
+					if( BIT_CHECK(INP_PORTPIN,i)) {
+  e6:	86 b3       	in	r24, 0x16	; 22
+  e8:	90 e0       	ldi	r25, 0x00	; 0
+  ea:	0c 2e       	mov	r0, r28
+  ec:	02 c0       	rjmp	.+4      	; 0xf2 <main+0x56>
+  ee:	95 95       	asr	r25
+  f0:	87 95       	ror	r24
+  f2:	0a 94       	dec	r0
+  f4:	e2 f7       	brpl	.-8      	; 0xee <main+0x52>
+  f6:	80 ff       	sbrs	r24, 0
+  f8:	10 c0       	rjmp	.+32     	; 0x11a <main+0x7e>
+						Blink_On(i);
+  fa:	8c 2f       	mov	r24, r28
+  fc:	9d 2f       	mov	r25, r29
+  fe:	a4 df       	rcall	.-184    	; 0x48 <_Z8Blink_Oni>
+						BIT_SET(status,i);
+ 100:	20 91 62 00 	lds	r18, 0x0062
+ 104:	c8 01       	movw	r24, r16
+ 106:	0c 2e       	mov	r0, r28
+ 108:	02 c0       	rjmp	.+4      	; 0x10e <main+0x72>
+ 10a:	88 0f       	add	r24, r24
+ 10c:	99 1f       	adc	r25, r25
+ 10e:	0a 94       	dec	r0
+ 110:	e2 f7       	brpl	.-8      	; 0x10a <main+0x6e>
+ 112:	82 2b       	or	r24, r18
+ 114:	80 93 62 00 	sts	0x0062, r24
+ 118:	0d c0       	rjmp	.+26     	; 0x134 <main+0x98>
+					}else{
+						BIT_CLEAR(status,i);
+ 11a:	c8 01       	movw	r24, r16
+ 11c:	0c 2e       	mov	r0, r28
+ 11e:	02 c0       	rjmp	.+4      	; 0x124 <main+0x88>
+ 120:	88 0f       	add	r24, r24
+ 122:	99 1f       	adc	r25, r25
+ 124:	0a 94       	dec	r0
+ 126:	e2 f7       	brpl	.-8      	; 0x120 <main+0x84>
+ 128:	80 95       	com	r24
+ 12a:	90 91 62 00 	lds	r25, 0x0062
+ 12e:	89 23       	and	r24, r25
+ 130:	80 93 62 00 	sts	0x0062, r24
+	
+    {
+		
+		if (!BIT_CHECK(ALM_PORTPIN ,1)){			// Check whether the button is pressed
+			if(!locked){
+				for(i=0;i<4;i++){
+ 134:	21 96       	adiw	r28, 0x01	; 1
+ 136:	c4 30       	cpi	r28, 0x04	; 4
+ 138:	d1 05       	cpc	r29, r1
+ 13a:	a9 f6       	brne	.-86     	; 0xe6 <main+0x4a>
+ 13c:	0b c0       	rjmp	.+22     	; 0x154 <main+0xb8>
+					}else{
+						BIT_CLEAR(status,i);
+					}
+				}
+			}else{
+				if(((INP_PORTPIN & 0x0f) !=status) && (!alarmMode)){		//4 bits only
+ 13e:	96 b3       	in	r25, 0x16	; 22
+ 140:	9f 70       	andi	r25, 0x0F	; 15
+ 142:	80 91 62 00 	lds	r24, 0x0062
+ 146:	98 17       	cp	r25, r24
+ 148:	29 f0       	breq	.+10     	; 0x154 <main+0xb8>
+ 14a:	80 91 60 00 	lds	r24, 0x0060
+ 14e:	88 23       	and	r24, r24
+ 150:	09 f4       	brne	.+2      	; 0x154 <main+0xb8>
+ 152:	4a c0       	rjmp	.+148    	; 0x1e8 <main+0x14c>
+					BIT_SET(ALM_PORT,0);			//produce the alarm until unlocked
+					alarmMode=1;
+				}
+			}
+			locked=1;
+ 154:	d0 92 63 00 	sts	0x0063, r13
+ 158:	be cf       	rjmp	.-132    	; 0xd6 <main+0x3a>
+		}else{
+			if(oldstatus!=INP_PORTPIN){
+ 15a:	96 b3       	in	r25, 0x16	; 22
+ 15c:	80 91 61 00 	lds	r24, 0x0061
+ 160:	98 17       	cp	r25, r24
+ 162:	e1 f1       	breq	.+120    	; 0x1dc <main+0x140>
+ 164:	ce 2d       	mov	r28, r14
+ 166:	df 2d       	mov	r29, r15
+				for(i=0;i<4;i++){
+					if( BIT_CHECK(INP_PORTPIN,i)){
+ 168:	26 b3       	in	r18, 0x16	; 22
+ 16a:	9d 2f       	mov	r25, r29
+ 16c:	30 e0       	ldi	r19, 0x00	; 0
+ 16e:	8c 2f       	mov	r24, r28
+ 170:	0c 2e       	mov	r0, r28
+ 172:	02 c0       	rjmp	.+4      	; 0x178 <main+0xdc>
+ 174:	35 95       	asr	r19
+ 176:	27 95       	ror	r18
+ 178:	0a 94       	dec	r0
+ 17a:	e2 f7       	brpl	.-8      	; 0x174 <main+0xd8>
+ 17c:	20 ff       	sbrs	r18, 0
+ 17e:	19 c0       	rjmp	.+50     	; 0x1b2 <main+0x116>
+						if (!BIT_CHECK(oldstatus,i))   {
+ 180:	20 91 61 00 	lds	r18, 0x0061
+ 184:	30 e0       	ldi	r19, 0x00	; 0
+ 186:	0c 2e       	mov	r0, r28
+ 188:	02 c0       	rjmp	.+4      	; 0x18e <main+0xf2>
+ 18a:	35 95       	asr	r19
+ 18c:	27 95       	ror	r18
+ 18e:	0a 94       	dec	r0
+ 190:	e2 f7       	brpl	.-8      	; 0x18a <main+0xee>
+ 192:	20 fd       	sbrc	r18, 0
+ 194:	1f c0       	rjmp	.+62     	; 0x1d4 <main+0x138>
+							 
+							Blink_On(i);
+ 196:	58 df       	rcall	.-336    	; 0x48 <_Z8Blink_Oni>
+							BIT_SET(oldstatus,i);
+ 198:	c8 01       	movw	r24, r16
+ 19a:	0c 2e       	mov	r0, r28
+ 19c:	02 c0       	rjmp	.+4      	; 0x1a2 <main+0x106>
+ 19e:	88 0f       	add	r24, r24
+ 1a0:	99 1f       	adc	r25, r25
+ 1a2:	0a 94       	dec	r0
+ 1a4:	e2 f7       	brpl	.-8      	; 0x19e <main+0x102>
+ 1a6:	90 91 61 00 	lds	r25, 0x0061
+ 1aa:	89 2b       	or	r24, r25
+ 1ac:	80 93 61 00 	sts	0x0061, r24
+ 1b0:	11 c0       	rjmp	.+34     	; 0x1d4 <main+0x138>
+						}
+					}else{
+						BIT_CLEAR(LED_PORT,i);
+ 1b2:	22 b3       	in	r18, 0x12	; 18
+ 1b4:	c8 01       	movw	r24, r16
+ 1b6:	0c 2e       	mov	r0, r28
+ 1b8:	02 c0       	rjmp	.+4      	; 0x1be <main+0x122>
+ 1ba:	88 0f       	add	r24, r24
+ 1bc:	99 1f       	adc	r25, r25
+ 1be:	0a 94       	dec	r0
+ 1c0:	e2 f7       	brpl	.-8      	; 0x1ba <main+0x11e>
+ 1c2:	80 95       	com	r24
+ 1c4:	98 2f       	mov	r25, r24
+ 1c6:	92 23       	and	r25, r18
+ 1c8:	92 bb       	out	0x12, r25	; 18
+						BIT_CLEAR(oldstatus,i);
+ 1ca:	90 91 61 00 	lds	r25, 0x0061
+ 1ce:	89 23       	and	r24, r25
+ 1d0:	80 93 61 00 	sts	0x0061, r24
+				}
+			}
+			locked=1;
+		}else{
+			if(oldstatus!=INP_PORTPIN){
+				for(i=0;i<4;i++){
+ 1d4:	21 96       	adiw	r28, 0x01	; 1
+ 1d6:	c4 30       	cpi	r28, 0x04	; 4
+ 1d8:	d1 05       	cpc	r29, r1
+ 1da:	31 f6       	brne	.-116    	; 0x168 <main+0xcc>
+						BIT_CLEAR(LED_PORT,i);
+						BIT_CLEAR(oldstatus,i);
+					}
+				}
+			}
+			BIT_CLEAR(ALM_PORT,0);			//clear the alarm
+ 1dc:	a8 98       	cbi	0x15, 0	; 21
+			locked=0;
+ 1de:	10 92 63 00 	sts	0x0063, r1
+			alarmMode=0;
+ 1e2:	10 92 60 00 	sts	0x0060, r1
+ 1e6:	77 cf       	rjmp	.-274    	; 0xd6 <main+0x3a>
+						BIT_CLEAR(status,i);
+					}
+				}
+			}else{
+				if(((INP_PORTPIN & 0x0f) !=status) && (!alarmMode)){		//4 bits only
+					BIT_SET(ALM_PORT,0);			//produce the alarm until unlocked
+ 1e8:	a8 9a       	sbi	0x15, 0	; 21
+					alarmMode=1;
+ 1ea:	d0 92 60 00 	sts	0x0060, r13
+ 1ee:	b2 cf       	rjmp	.-156    	; 0x154 <main+0xb8>
 
-00000134 <_exit>:
- 134:	f8 94       	cli
+000001f0 <__vector_6>:
+	
 
-00000136 <__stop_program>:
- 136:	ff cf       	rjmp	.-2      	; 0x136 <__stop_program>
+
+
+ISR (TIMER1_COMPA_vect)
+{
+ 1f0:	1f 92       	push	r1
+ 1f2:	0f 92       	push	r0
+ 1f4:	0f b6       	in	r0, 0x3f	; 63
+ 1f6:	0f 92       	push	r0
+ 1f8:	11 24       	eor	r1, r1
+	if(BIT_CHECK(ALM_PORTPIN,0)){
+ 1fa:	98 9b       	sbis	0x13, 0	; 19
+ 1fc:	02 c0       	rjmp	.+4      	; 0x202 <__vector_6+0x12>
+		BIT_CLEAR(ALM_PORT,0);
+ 1fe:	a8 98       	cbi	0x15, 0	; 21
+ 200:	01 c0       	rjmp	.+2      	; 0x204 <__vector_6+0x14>
+	}else{
+		BIT_SET(ALM_PORT,0);
+ 202:	a8 9a       	sbi	0x15, 0	; 21
+	}
+	// action to be done every 1s
+}
+ 204:	0f 90       	pop	r0
+ 206:	0f be       	out	0x3f, r0	; 63
+ 208:	0f 90       	pop	r0
+ 20a:	1f 90       	pop	r1
+ 20c:	18 95       	reti
+
+0000020e <_exit>:
+ 20e:	f8 94       	cli
+
+00000210 <__stop_program>:
+ 210:	ff cf       	rjmp	.-2      	; 0x210 <__stop_program>
