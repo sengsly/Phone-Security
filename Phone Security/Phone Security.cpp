@@ -29,6 +29,7 @@ uint8_t locked=0;
 uint8_t status=0;
 uint8_t oldstatus=0xff;
 uint8_t alarmMode=0;			//
+uint8_t flashLED=0;
 
 void Blink_On(int b){			//Blink and then turn on
 	
@@ -37,6 +38,18 @@ void Blink_On(int b){			//Blink and then turn on
 		_delay_ms(BLINK_PERIOD);
 		
 		BIT_SET(LED_PORT,b);
+		_delay_ms(BLINK_PERIOD);
+	}
+}
+
+void BlinkAll_On(){			//Blink and then turn on
+	
+	for(int i=0;i<3;i++){
+		LED_PORT &= ~flashLED;			//flashLED;
+		
+		_delay_ms(BLINK_PERIOD);
+		
+		LED_PORT |= flashLED;
 		_delay_ms(BLINK_PERIOD);
 	}
 }
@@ -70,14 +83,17 @@ int main(void)
     {
 		if (!BIT_CHECK(ALM_PORTPIN ,1)){			// Check whether the button is pressed
 			if(!locked){
+				flashLED=0;
 				for(i=0;i<4;i++){
 					if( !BIT_CHECK(INP_PORTPIN,i)) {
-						Blink_On(i);
+						//Blink_On(i);
+						BIT_SET(flashLED ,i);
 						BIT_CLEAR(status,i);
 					}else{
 						BIT_SET(status,i);
 					}
 				}
+				BlinkAll_On();
 			}else{
 				if(((INP_PORTPIN & 0x0f) != status) && (!alarmMode)){		//4 bits only
 					BIT_SET(ALM_PORT,0);			//produce the alarm until unlocked
@@ -87,10 +103,13 @@ int main(void)
 			locked=1;
 		}else{
 			if(oldstatus!=INP_PORTPIN){
+				flashLED=0;
 				for(i=0;i<4;i++){
 					if( !BIT_CHECK(INP_PORTPIN,i)){
 						if (BIT_CHECK(oldstatus,i))   {
-							Blink_On(i);
+							//Blink_On(i);
+							//flashLED |= (1<i);
+							BIT_SET(flashLED,i);
 							BIT_CLEAR(oldstatus,i);
 						}
 					}else{
@@ -98,6 +117,8 @@ int main(void)
 						BIT_SET(oldstatus,i);
 					}
 				}
+				BlinkAll_On();
+				
 			}
 			BIT_CLEAR(ALM_PORT,0);			//clear the alarm
 			locked=0;
